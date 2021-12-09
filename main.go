@@ -1,6 +1,6 @@
 package main
 
-import "github.com/goLearn/channel"
+import "goLearn/channel"
 
 func main() {
 	channel.TestModel()

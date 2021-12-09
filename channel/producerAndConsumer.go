@@ -19,19 +19,23 @@ func consumer(cons <-chan int, exitSig chan<- int) {
 	for {
 		v := <-cons
 		fmt.Println("consumer:", v)
-		time.Sleep(2 * time.Second)
-	}
+		time.Sleep(3 * time.Second)
 
-	exitSig <- 1
+		if v == 5 {
+			fmt.Println("consumer exit")
+			exitSig <- 1 //消费者消费到5后发出退出信号，通知主进程退出
+			return
+		}
+	}
 }
 
+//TestModel 测试生产消费者模型
 func TestModel() {
-	prod := make(chan int, 10)
-	cons := make(chan int, 10)
+	fchan := make(chan int, 5)
 	exitSig := make(chan int)
 
-	go producer(20, prod)
-	go consumer(cons, exitSig)
+	go producer(10, fchan)
+	go consumer(fchan, exitSig)
 
 	<-exitSig
 	fmt.Println("main exit")
